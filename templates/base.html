@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="cs" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Stock Dashboard{% endblock %}</title>
+  <style>
+    :root{
+      --bg:#ffffff; --card:#f7f7f8; --text:#111; --muted:#6b7280;
+      --primary:#2563eb; --accent:#10b981; --warn:#ef4444; --grid:#e5e7eb;
+    }
+    [data-theme="dark"]{
+      --bg:#0b0f17; --card:#111521; --text:#e5e7eb; --muted:#9aa2b2;
+      --primary:#60a5fa; --accent:#34d399; --warn:#f87171; --grid:#1f2937;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text); background:var(--bg)}
+    .container{max-width:1100px; margin:0 auto; padding:24px}
+    .header{display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:16px}
+    .title{font-weight:700; font-size:22px}
+    .row{display:flex; flex-wrap:wrap; gap:16px}
+    .card{background:var(--card); border:1px solid var(--grid); border-radius:14px; padding:16px; flex:1 1 520px}
+    label{font-size:14px; color:var(--muted); margin-right:8px}
+    input,button{padding:10px 12px; border-radius:10px; border:1px solid var(--grid); background:#fff}
+    [data-theme="dark"] input,[data-theme="dark"] button{background:#0d1220; color:var(--text)}
+    button{cursor:pointer}
+    .controls{display:flex; gap:8px; flex-wrap:wrap}
+    .error{background:rgba(239,68,68,.1); color:var(--warn); border:1px solid var(--warn); padding:10px; border-radius:10px; margin-top:10px}
+    .muted{color:var(--muted); font-size:13px}
+    .spinner{width:18px;height:18px;border:3px solid var(--grid);border-top-color:var(--primary);border-radius:50%;animation:spin 0.9s linear infinite; display:inline-block;vertical-align:middle}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">{% block header %}Stock Dashboard{% endblock %}</div>
+      <div>
+        <button id="themeBtn" title="Toggle theme">🌓</button>
+      </div>
+    </div>
+    {% block content %}{% endblock %}
+    <script>
+      // simple theme toggle with persistence
+      const root = document.documentElement;
+      const saved = localStorage.getItem("theme");
+      if(saved){ root.setAttribute("data-theme", saved); }
+      document.getElementById("themeBtn").onclick = () => {
+        const cur = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", cur); localStorage.setItem("theme", cur);
+      };
+    </script>
+    {% block scripts %}{% endblock %}
+  </div>
+</body>
+</html>

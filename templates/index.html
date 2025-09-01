@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Stock Dashboard{% endblock %}
+{% block header %}Marketstack – Stock Dashboard{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <form id="form" class="controls">
+      <label>Ticker <input type="text" id="symbol" value="{{ symbol }}" /></label>
+      <label>Od <input type="date" id="date_from" value="{{ date_from }}" /></label>
+      <label>Do <input type="date" id="date_to" value="{{ date_to }}" /></label>
+      <button type="submit">
+        <span id="btnText">Načíst data</span>
+        <span id="btnSpin" class="spinner" style="display:none"></span>
+      </button>
+      <span id="meta" class="muted"></span>
+    </form>
+    <div id="err" class="error" style="display:none"></div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <canvas id="priceChart" height="120"></canvas>
+    </div>
+    <div class="card">
+      <canvas id="volChart" height="120"></canvas>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let priceChart, volChart;
+
+function fmtNum(n){ return n?.toLocaleString?.('cs-CZ') ?? n; }
+
+function buildCharts(payload){
+  const labels = payload.labels;
+  const close  = payload.close;
+  const sma5   = payload.sma5;
+  const volume = payload.volume;
+
+  if(priceChart){ priceChart.destroy(); }
+  if(volChart){ volChart.destroy(); }
+
+  const root     = document.documentElement;
+  const gridColor= getComputedStyle(root).getPropertyValue('--grid').trim();
+  const textColor= getComputedStyle(root).getPropertyValue('--text').trim();
+  const primary  = getComputedStyle(root).getPropertyValue('--primary').trim();
+  const accent   = getComputedStyle(root).getPropertyValue('--accent').trim();
+
+  // line chart Close + SMA
+  const ctx1 = document.getElementById('priceChart').getContext('2d');
+  priceChart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Close', data: close, borderColor: primary, tension: 0.25, pointRadius: 0, borderWidth: 2 },
+        { label: 'SMA (5)', data: sma5, borderColor: accent, borderDash: [5,4], tension: 0.25, pointRadius: 0, borderWidth: 2 }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend:{ labels:{ color:textColor }}, tooltip:{ callbacks:{
+        label: (ctx)=> `${ctx.dataset.label}: ${fmtNum(ctx.parsed.y)}`
+      }}},
+      scales:{
+        x:{ ticks:{ color:textColor }, grid:{ color:gridColor }},
+        y:{ ticks:{ color:textColor }, grid:{ color:gridColor }}
+      }
+    }
+  });
+
+  // volume bar chart
+  const ctx2 = document.getElementById('volChart').getContext('2d');
+  volChart = new Chart(ctx2, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Volume', data: volume, backgroundColor: primary }]},
+    options: {
+      responsive: true,
+      plugins:{ legend:{ labels:{ color:textColor }}, tooltip:{ callbacks:{
+        label: (ctx)=> `Volume: ${fmtNum(ctx.parsed.y)}`
+      }}},
+      scales:{
+        x:{ ticks:{ color:textColor }, grid:{ color:gridColor }},
+        y:{ ticks:{ color:textColor }, grid:{ color:gridColor }}
+      }
+    }
+  });
+}
+
+async function handleSubmit(e){
+  e?.preventDefault?.();
+  const symbol    = document.getElementById('symbol').value.trim().toUpperCase();
+  const date_from = document.getElementById('date_from').value;
+  const date_to   = document.getElementById('date_to').value;
+
+  document.getElementById('btnText').style.display = 'none';
+  document.getElementById('btnSpin').style.display = 'inline-block';
+  document.getElementById('err').style.display = 'none';
+  document.getElementById('meta').textContent = '';
+
+  const res = await fetch(`/api/eod?symbol=${symbol}&date_from=${date_from}&date_to=${date_to}`);
+  const payload = await res.json();
+
+  document.getElementById('btnText').style.display = 'inline';
+  document.getElementById('btnSpin').style.display = 'none';
+
+  if(payload.error){
+    document.getElementById('err').textContent = payload.error;
+    document.getElementById('err').style.display = 'block';
+    return;
+  }
+
+  buildCharts(payload);
+  document.getElementById('meta').textContent = `Záznamů: ${payload.count} | Symbol: ${payload.symbol}`;
+}
+
+document.getElementById('form').addEventListener('submit', handleSubmit);
+handleSubmit(); // auto-load při načtení
+</script>
+{% endblock %}
