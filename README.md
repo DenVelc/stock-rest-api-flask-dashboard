@@ -1,4 +1,4 @@
-# 📈 Flask Stock Dashboard
+# Flask Stock Dashboard
 
 An interactive dashboard for visualizing financial data using the [Marketstack API](https://marketstack.com/).  
 The project demonstrates how to connect **Flask** with a REST API, fetch stock data, and render it in a modern dashboard with **Chart.js**.
@@ -7,7 +7,7 @@ The project demonstrates how to connect **Flask** with a REST API, fetch stock d
 
 ---
 
-## 🚀 Features
+## Features
 - Fetches **End of Day (EOD)** stock market data for a chosen ticker (e.g., AAPL, NVDA, MSFT).
 - Displays **Close price** and a **5-day Simple Moving Average (SMA)** to identify short-term trends.
 - Shows **Volume** (number of shares traded per day).
@@ -17,14 +17,14 @@ The project demonstrates how to connect **Flask** with a REST API, fetch stock d
 
 ---
 
-## 🛠 Technologies
+## Technologies
 - **[Flask](https://flask.palletsprojects.com/)** – Python web framework  
 - **[Requests](https://requests.readthedocs.io/)** – API communication  
 - **[Chart.js](https://www.chartjs.org/)** – data visualization on the frontend  
 
 ---
 
-## 📊 Data
+## Data
 The dashboard uses **financial EOD (End of Day) data** from **Marketstack**:
 - **Close** – stock closing price of the day  
 - **SMA(5)** – 5-day simple moving average of closing prices  
@@ -34,13 +34,13 @@ These indicators are widely used in **technical analysis** to identify market tr
 
 ---
 
-## 🔑 API Key
+## API Key
 You can obtain a free API key from [https://marketstack.com/](https://marketstack.com/).  
 Simply register, and you will receive an `access_key` which is required for all requests.
 
 ---
 
-## 📦 Installation
+## Installation
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/flask-stock-dashboard.git
@@ -68,7 +68,7 @@ Simply register, and you will receive an `access_key` which is required for all 
 
 ---
 
-## 📂 Project structure
+## Project structure
 ```
 flask-stock-dashboard/
 ├── app.py              # Flask backend
@@ -82,7 +82,7 @@ flask-stock-dashboard/
 
 ---
 
-## ✨ Possible extensions
+## Possible extensions
 - Add more indicators (SMA20, SMA50, EMA).
 - Include candlestick charts (Plotly).
 - Export stock data to CSV.
@@ -91,5 +91,5 @@ flask-stock-dashboard/
 
 ---
 
-## 📜 License
+## License
 MIT License – created for learning and demonstration purposes.
