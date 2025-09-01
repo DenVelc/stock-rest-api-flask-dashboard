@@ -3,7 +3,7 @@
 An interactive dashboard for visualizing financial data using the [Marketstack API](https://marketstack.com/).  
 The project demonstrates how to connect **Flask** with a REST API, fetch stock data, and render it in a modern dashboard with **Chart.js**.
 
-![Screenshot](stock-rest-api-flask-dashboard/Marketstack Dashboard.jpg)
+![Screenshot](/Marketstack Dashboard.jpg)
 
 ---
 
